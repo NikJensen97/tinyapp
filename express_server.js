@@ -29,3 +29,9 @@ app.get("/urls", (req, res) => {
   const templateVars = { urls: urlDatabase };
   res.render("urls_index", templateVars);
 });
+
+app.get("/urls/:id", (req, res) => {
+  const templateVars = { id: "b2xVn2", longURL: "http://www.lighthouselabs.ca" };
+  res.render("urls_show", templateVars);
+});
+
