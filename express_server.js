@@ -45,7 +45,6 @@ app.get("/urls", (req, res) => {
 app.get("/urls/new", (req, res) => {
   const templateVars = {
     users,
-    
   };
   res.render("urls_new", templateVars);
 });
@@ -53,11 +52,16 @@ app.get("/urls/new", (req, res) => {
 app.get("/urls/register", (req, res) => {
  const templateVars = {
   users,
-
  }
-
 res.render("urls_register", templateVars)
 });
+
+app.get("/urls/login", (req, res) => {
+  const templateVars = {
+   users,
+  }
+ res.render("urls_login", templateVars)
+ });
 
 app.get("/urls/:id", (req, res) => {
   const templateVars = {
@@ -88,12 +92,13 @@ app.post("/urls/:id/delete", (req, res) => {
   res.redirect(`/urls`);
 });
 // recieves user login input and stores to a cookie
+/*
 app.post("/login", (req, res) => {
   console.log(req.body.username);
   res.cookie("username",req.body.username);
   res.redirect(`/urls`);
 });
-
+*/
 
 app.post("/urls/:id/edit", (req, res) => {
   console.log(req.params.id);
@@ -126,7 +131,6 @@ app.post("/register", (req, res) => {
   console.log(`new user: ${newUser}`);
   res.cookie("user_id", newUser);
   res.redirect(`/urls`);
-  // console.log(user['username'])
 });
 
 app.get("/u/:id", (req, res) => {
