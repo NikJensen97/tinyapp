@@ -44,10 +44,21 @@ app.post("/urls", (req, res) => {
   res.redirect(`/urls/${newID}`);
 });
 
+app.post("/urls/:id", (req, res) => {
+  console.log(`${req.params.id} changes to ${req.body.newLongURL}`);
+  urlDatabase[req.params.id] = req.body.newLongURL;
+  res.redirect(`/urls`);
+});
+
 app.post("/urls/:id/delete", (req, res) => {
   console.log(req.params.id);
   delete urlDatabase[req.params.id];
   res.redirect(`/urls`);
+});
+
+app.post("/urls/:id/edit", (req, res) => {
+  console.log(req.params.id);
+  res.redirect(`/urls/${req.params.id}`);
 });
 
 app.get("/urls/:id", (req, res) => {
