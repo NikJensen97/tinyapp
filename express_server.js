@@ -10,6 +10,11 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+const users = {
+
+
+
+};
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.get("/", (req, res) => {
@@ -28,28 +33,37 @@ app.get("/hello", (req, res) => {
   res.send("<html><body>Hello <b>World</b></body></html>\n");
 });
 
-
+// creates main page
 app.get("/urls", (req, res) => {
   const templateVars = { 
     urls: urlDatabase,
-    username: req.cookies["username"]  
+    users  
   };
   res.render("urls_index", templateVars);
 });
-
+// creates page to make new URLs
 app.get("/urls/new", (req, res) => {
   const templateVars = {
-    username: req.cookies["username"],
+    users,
     
   };
   res.render("urls_new", templateVars);
+});
+// creates registration page
+app.get("/urls/register", (req, res) => {
+ const templateVars = {
+  users,
+
+ }
+
+res.render("urls_register", templateVars)
 });
 
 app.get("/urls/:id", (req, res) => {
   const templateVars = {
     id: req.params.id,
     longURL: `${urlDatabase[req.params.id]}`, 
-    username: req.cookies["username"]
+    users
     };
   res.render("urls_show", templateVars);
 });
@@ -90,6 +104,19 @@ app.post("/logout", (req, res) => {
   console.log(Object.keys(req.cookies)[0]);
   res.clearCookie(Object.keys(req.cookies)[0]);
   res.redirect(`/urls`);
+});
+// logs user registration into users
+app.post("/register", (req, res) => {
+ 
+ const newUser = generateRandomString();
+ users['newUser'] = { "username": newUser,
+ "email": req.body.email,
+ "password": req.body.password
+}
+  console.log(`new user: ${newUser}`);
+  res.cookie("user_id", newUser);
+  res.redirect(`/urls`);
+  // console.log(user['username'])
 });
 
 app.get("/u/:id", (req, res) => {
