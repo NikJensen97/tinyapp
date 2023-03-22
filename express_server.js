@@ -9,7 +9,7 @@ const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
 };
-
+let loginStatus = false;
 const users = {
 
 
@@ -37,7 +37,8 @@ app.get("/hello", (req, res) => {
 app.get("/urls", (req, res) => {
   const templateVars = { 
     urls: urlDatabase,
-    users  
+    users,
+    loginStatus
   };
   res.render("urls_index", templateVars);
 });
@@ -45,6 +46,7 @@ app.get("/urls", (req, res) => {
 app.get("/urls/new", (req, res) => {
   const templateVars = {
     users,
+    loginStatus
   };
   res.render("urls_new", templateVars);
 });
@@ -52,6 +54,7 @@ app.get("/urls/new", (req, res) => {
 app.get("/urls/register", (req, res) => {
  const templateVars = {
   users,
+  loginStatus
  }
 res.render("urls_register", templateVars)
 });
@@ -59,6 +62,7 @@ res.render("urls_register", templateVars)
 app.get("/urls/login", (req, res) => {
   const templateVars = {
    users,
+   loginStatus
   }
  res.render("urls_login", templateVars)
  });
@@ -67,7 +71,8 @@ app.get("/urls/:id", (req, res) => {
   const templateVars = {
     id: req.params.id,
     longURL: `${urlDatabase[req.params.id]}`, 
-    users
+    users,
+    loginStatus
     };
   res.render("urls_show", templateVars);
 });
@@ -91,14 +96,32 @@ app.post("/urls/:id/delete", (req, res) => {
   delete urlDatabase[req.params.id];
   res.redirect(`/urls`);
 });
-// recieves user login input and stores to a cookie
-/*
+// recieves user login input and checks if they are registered
+
 app.post("/login", (req, res) => {
-  console.log(req.body.username);
-  res.cookie("username",req.body.username);
-  res.redirect(`/urls`);
+  console.log(req.body);
+  const email = req.body.email;
+  const password = req.body.password;
+  if (!email || !password) {
+    res.status(400).send('please provide valid email and password');
+  }
+  let found = 0;
+  for (const key in users) {
+    if (users[key]['email'] === email){
+      found = 1;
+      if (users[key]['password'] !== password) {
+        res.status(403).send('passwords do not match');
+      }
+    res.cookie("user_id", users[key]['username']);
+    loginStatus = true;
+    res.redirect(`/urls`);
+    }
+  }
+  if (found === 0){
+    res.status(403).send('email not found');
+  }
 });
-*/
+
 
 app.post("/urls/:id/edit", (req, res) => {
   console.log(req.params.id);
@@ -108,7 +131,8 @@ app.post("/urls/:id/edit", (req, res) => {
 app.post("/logout", (req, res) => {
   console.log(Object.keys(req.cookies)[0]);
   res.clearCookie(Object.keys(req.cookies)[0]);
-  res.redirect(`/urls`);
+  loginStatus = false;
+  res.redirect(`/urls/login`);
 });
 // logs user registration into users
 app.post("/register", (req, res) => {
@@ -130,6 +154,7 @@ app.post("/register", (req, res) => {
 }
   console.log(`new user: ${newUser}`);
   res.cookie("user_id", newUser);
+  loginStatus = true;
   res.redirect(`/urls`);
 });
 
