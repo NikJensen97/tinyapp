@@ -107,11 +107,21 @@ app.post("/logout", (req, res) => {
 });
 // logs user registration into users
 app.post("/register", (req, res) => {
- 
+  const email = req.body.email;
+  const password = req.body.password;
+  if (!email || !password) {
+    res.status(400).send('please provide valid email and password');
+  }
+  for (const key in users) {
+    if (users[key]['email'] === email){
+      res.status(400).send('email entered is already in use');
+    }
+  }
+  // users.hasOwnProperty('newUser')
  const newUser = generateRandomString();
  users['newUser'] = { "username": newUser,
- "email": req.body.email,
- "password": req.body.password
+ "email": email,
+ "password": password
 }
   console.log(`new user: ${newUser}`);
   res.cookie("user_id", newUser);
