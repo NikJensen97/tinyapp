@@ -16,14 +16,15 @@
       <div class="navbar-nav">
         <a class="nav-item nav-link" href="/urls">My URLs</a>
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
-        <% if (username) { %>
+        <a class="nav-item nav-link" href="/urls/register">Register</a>
+        <% if (users.hasOwnProperty('newUser')) { %>
           <p class="card-text">
-            Logged in as: <%= username %>
+            Logged in as: <%= users['newUser'].username %>
            
           </p>
           <p class="card-text"><form method="POST" action="/logout"><input type="submit" value="Logout" ></form></p>
           <% } %>
-          <% if (!username) { %>
+          <% if (!users.hasOwnProperty('newUser')) { %>
         <form class="form-inline" action="/login" method="POST">
           <div class="form-group mb-2">
             <input
