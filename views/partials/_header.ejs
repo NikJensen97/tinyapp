@@ -19,7 +19,7 @@
         
         <% if (loginStatus) { %>
           <p class="card-text">
-            Logged in as: <%= users['newUser'].username %>
+            Logged in as: <%= username %>
            
           </p>
           <p class="card-text"><form method="POST" action="/logout"><input type="submit" value="Logout" ></form></p>
