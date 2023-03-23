@@ -16,8 +16,7 @@
       <div class="navbar-nav">
         <a class="nav-item nav-link" href="/urls">My URLs</a>
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
-        <a class="nav-item nav-link" href="/urls/register">Register</a>
-        <a class="nav-item nav-link" href="/urls/login">Login Page</a>
+        
         <% if (loginStatus) { %>
           <p class="card-text">
             Logged in as: <%= users['newUser'].username %>
@@ -25,7 +24,10 @@
           </p>
           <p class="card-text"><form method="POST" action="/logout"><input type="submit" value="Logout" ></form></p>
           <% } %>
-          
+          <% if (!loginStatus) { %>
+            <a class="nav-item nav-link" href="/urls/register">Register</a>
+            <a class="nav-item nav-link" href="/urls/login">Login Page</a>
+            <% } %>
       </div>
     </div>
   </nav>
