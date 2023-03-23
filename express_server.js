@@ -48,6 +48,9 @@ app.get("/urls/new", (req, res) => {
     users,
     loginStatus
   };
+  if (!loginStatus) {
+    res.redirect(`/urls/login`);
+  }
   res.render("urls_new", templateVars);
 });
 // creates registration page
@@ -56,6 +59,9 @@ app.get("/urls/register", (req, res) => {
   users,
   loginStatus
  }
+ if (loginStatus) {
+  res.redirect(`/urls`);
+}
 res.render("urls_register", templateVars)
 });
 
@@ -63,6 +69,9 @@ app.get("/urls/login", (req, res) => {
   const templateVars = {
    users,
    loginStatus
+  }
+  if (loginStatus) {
+    res.redirect(`/urls`);
   }
  res.render("urls_login", templateVars)
  });
@@ -74,11 +83,18 @@ app.get("/urls/:id", (req, res) => {
     users,
     loginStatus
     };
+    if (!urlDatabase[req.params.id]) {
+      res.status(400).send('page does not exist');
+    }
   res.render("urls_show", templateVars);
 });
 
 // adds new URL and creates a random short URL for it
 app.post("/urls", (req, res) => {
+  if (!loginStatus) {
+    res.status(401).send('You must be logged in to use this feature!');
+    return;
+  }
   console.log(req.body); // Log the POST request body to the console
   const newID = generateRandomString();
   urlDatabase[newID] = req.body.longURL;
@@ -99,6 +115,7 @@ app.post("/urls/:id/delete", (req, res) => {
 // recieves user login input and checks if they are registered
 
 app.post("/login", (req, res) => {
+  
   console.log(req.body);
   const email = req.body.email;
   const password = req.body.password;
@@ -136,6 +153,7 @@ app.post("/logout", (req, res) => {
 });
 // logs user registration into users
 app.post("/register", (req, res) => {
+  
   const email = req.body.email;
   const password = req.body.password;
   if (!email || !password) {
